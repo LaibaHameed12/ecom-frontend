@@ -16,10 +16,9 @@ export const CartItem = ({ product, productId, image, title, size, color, price,
 
     return (
         <div
-            onClick={() => router.push(`/products/${productId}`)}
             className="bg-white cursor-pointer rounded-2xl p-4 sm:p-6 shadow-sm
-                       flex flex-col sm:flex-row sm:items-center sm:justify-between
-                       space-y-4 sm:space-y-0"
+                    flex flex-col sm:flex-row sm:items-center sm:justify-between
+                    space-y-4 sm:space-y-0"
         >
             {/* Mobile: Product Image and Details in Row */}
             <div className="flex items-start space-x-4 sm:flex-1">

@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useCreateOrderMutation } from '@/redux/slices/orders/ordersApi';
 import { clearCart } from '@/redux/slices/cart/cartSlice';
 
-const OrderSummary = ({ discountPercentage = 20, deliveryFee = 0 }) => {
+const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
     const [promoCode, setPromoCode] = useState('');
     const [address, setAddress] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('card');

@@ -3,9 +3,9 @@ import Footer from '@/components/Layouts/Footer';
 import Navbar from '@/components/Layouts/Navbar';
 import SidebarFilters from '@/components/ProductsPage/FiltersSidebar';
 import ProductsSection from '@/components/ProductsPage/ProductsSection';
-import React from 'react';
+import React, { Suspense } from 'react';
 
-const Products = ({ products }) => {
+const Products = () => {
     return (
         <>
             <Navbar />
@@ -18,7 +18,9 @@ const Products = ({ products }) => {
 
                     {/* Products Section */}
                     <div className="lg:col-span-3">
-                        <ProductsSection/>
+                        <Suspense fallback={<div className="text-center py-10">Loading products...</div>}>
+                            <ProductsSection />
+                        </Suspense>
                     </div>
                 </div>
             </Container>

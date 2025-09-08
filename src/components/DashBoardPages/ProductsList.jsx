@@ -108,7 +108,7 @@ export const ProductsList = ({ canDelete, canCreate }) => {
                                     <img
                                         src={product.images[0]}
                                         alt={product.name}
-                                        className="h-40 w-full object-cover"
+                                        className="h-60 w-full object-cover"
                                     />
                                 ) : (
                                     <Package className="w-16 h-16 text-gray-400" />
