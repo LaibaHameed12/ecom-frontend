@@ -76,7 +76,7 @@ export default function HeroSection() {
                     </div>
                 </div>
             </div>
-            <div className="bg-black flex items-center justify-between py-6 w-full px-4 sm:px-6 lg:px-16" >
+            <div className="bg-black flex items-center justify-between flex-wrap py-6 w-full px-4 sm:px-6 lg:px-16" >
                     <img src="/assets/img1.png" />
                     <img src="/assets/img2.png" />
                     <img src="/assets/img3.png" />

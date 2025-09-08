@@ -6,7 +6,7 @@ export const ProductImageGallery = ({ images = [] }) => {
     const [selectedImage, setSelectedImage] = useState(0);
 
     return (
-        <div className="w-full flex gap-4">
+        <div className="w-full flex  gap-4">
             {/* Thumbnail Images - Left Side */}
             <div className="flex flex-col justify-between h-[500px] w-[120px]">
                 {images.slice(0, 3).map((image, index) => (

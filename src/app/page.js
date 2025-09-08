@@ -13,8 +13,8 @@ export default function Home() {
     <HeroSection/>
     <NewArrivals/>
     <TopSellers/>
-    <ReviewsSlider/>
     <BrowseDressStyle/>
+    <ReviewsSlider/>
     <Footer/>
     </>
   );

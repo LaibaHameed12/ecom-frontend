@@ -29,7 +29,6 @@ export const ordersApi = createApi({
         }),
 
         getOrders: builder.query({
-            // optional params can be passed for server-side paging/filtering if you add support later
             query: (params) => ({
                 url: '/orders',
                 method: 'GET',
@@ -50,7 +49,6 @@ export const ordersApi = createApi({
         }),
 
         updateOrder: builder.mutation({
-            // payload: { id, ...changes }
             query: ({ id, ...patch }) => ({
                 url: `/orders/${id}`,
                 method: 'PATCH',

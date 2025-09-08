@@ -63,7 +63,7 @@ export const CTAButtons = ({ product, selectedVariants }) => {
     return (
         <div className="pt-4">
             {!isAdmin && !isSuper && (
-                <div className="flex items-center flex-col sm:flex-row space-x-4">
+                <div className="flex items-center flex-col gap-6 sm:flex-row space-x-4">
                     {/* Quantity buttons */}
                     <div className="flex items-center bg-[#F0F0F0] rounded-full">
                         <button

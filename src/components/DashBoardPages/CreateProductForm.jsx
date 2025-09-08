@@ -108,8 +108,8 @@ const CreateProductForm = () => {
                                     {...register("title")}
                                     placeholder="Enter product title"
                                     className={`w-full px-4 py-3 border rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent ${errors.title
-                                            ? 'border-red-300 bg-red-50'
-                                            : 'border-gray-200 hover:border-gray-300 focus:bg-white'
+                                        ? 'border-red-300 bg-red-50'
+                                        : 'border-gray-200 hover:border-gray-300 focus:bg-white'
                                         }`}
                                 />
                                 {errors.title && (
@@ -130,8 +130,8 @@ const CreateProductForm = () => {
                                     rows={3}
                                     placeholder="Describe your product in detail"
                                     className={`w-full px-4 py-3 border rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none ${errors.description
-                                            ? 'border-red-300 bg-red-50'
-                                            : 'border-gray-200 hover:border-gray-300 focus:bg-white'
+                                        ? 'border-red-300 bg-red-50'
+                                        : 'border-gray-200 hover:border-gray-300 focus:bg-white'
                                         }`}
                                 />
                                 {errors.description && (
@@ -152,8 +152,8 @@ const CreateProductForm = () => {
                                         {...register("price")}
                                         placeholder="0.00"
                                         className={`w-full pl-10 pr-4 py-3 border rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent ${errors.price
-                                                ? 'border-red-300 bg-red-50'
-                                                : 'border-gray-200 hover:border-gray-300 focus:bg-white'
+                                            ? 'border-red-300 bg-red-50'
+                                            : 'border-gray-200 hover:border-gray-300 focus:bg-white'
                                             }`}
                                     />
                                 </div>
@@ -178,8 +178,8 @@ const CreateProductForm = () => {
                                     <span className="text-red-500 ml-1">*</span>
                                 </label>
                                 <div className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${errors.images
-                                        ? 'border-red-300 bg-red-50'
-                                        : 'border-gray-200 hover:border-gray-300'
+                                    ? 'border-red-300 bg-red-50'
+                                    : 'border-gray-200 hover:border-gray-300'
                                     }`}>
                                     <Image className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                                     <input

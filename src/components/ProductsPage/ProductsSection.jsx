@@ -48,9 +48,9 @@ const ProductsSection = () => {
     return (
         <div>
             {/* Products Header */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex flex-col md:flex-row justify-between items-center mb-4">
                 <h2 className="text-lg font-semibold">Products</h2>
-                <div className="flex items-center gap-6">
+                <div className="flex flex-col sm:flex-row items-center gap-6">
                     {data?.total > 0 && (
                         <p className="text-sm text-gray-600">
                             Showing{" "}

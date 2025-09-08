@@ -5,9 +5,9 @@ import { User, LogOut } from 'lucide-react';
 export const ProfileHeader = ({ user, onLogout }) => {
     return (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="flex items-center justify-between">
+            <div className="flex gap-6  items-center justify-between flex-wrap">
                 <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                    <div className="w-16 h-16 hidden sm:flex bg-gray-200 rounded-full items-center justify-center">
                         <User className="w-8 h-8 text-gray-600" />
                     </div>
                     <div>
