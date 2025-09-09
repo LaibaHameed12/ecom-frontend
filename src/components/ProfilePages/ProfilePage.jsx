@@ -17,7 +17,6 @@ const UserProfilePage = () => {
 
     if (isLoading) return <p className="text-center py-10">Loading profile...</p>;
     if (isError || !user) return <p className="text-center py-10 text-red-500">Failed to load profile</p>;
-    console.log("user:::::", user);
 
     const handleLogout = () => {
         if (confirm('Are you sure you want to logout?')) {
@@ -89,7 +88,7 @@ const UserProfilePage = () => {
                 {/* Tab Content */}
                 <div className="space-y-6">
                     {activeTab === 'orders' && <OrderHistory userId={user._id} />}
-                    {activeTab === 'notifications' && <Notifications />}
+                    {activeTab === 'notifications' && <Notifications userId={user._id} />}
                 </div>
             </div>
         </div>

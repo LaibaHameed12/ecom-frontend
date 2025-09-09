@@ -25,51 +25,49 @@ export const productsApi = createApi({
     endpoints: (builder) => ({
         // GET /products
         getProducts: builder.query({
-  query: (params = {}) => {
-    // remove empty values
-    const cleanedParams = Object.fromEntries(
-      Object.entries(params).filter(([_, v]) => {
-        if (v === undefined || v === null) return false;
-        if (Array.isArray(v) && v.length === 0) return false;
-        if (typeof v === "string" && v.trim() === "") return false;
-        return true;
-      })
-    );
+            query: (params = {}) => {
+                // remove empty values
+                const cleanedParams = Object.fromEntries(
+                    Object.entries(params).filter(([_, v]) => {
+                        if (v === undefined || v === null) return false;
+                        if (Array.isArray(v) && v.length === 0) return false;
+                        if (typeof v === "string" && v.trim() === "") return false;
+                        return true;
+                    })
+                );
 
-    // Convert arrays -> comma-separated strings (backend DTO splits by comma)
-    Object.keys(cleanedParams).forEach((key) => {
-      const val = cleanedParams[key];
-      if (Array.isArray(val)) {
-        cleanedParams[key] = val.join(',');
-      }
-      // ensure numbers/booleans are sent as primitives (URLSearchParams will stringify)
-      if (typeof val === 'number' || typeof val === 'boolean') {
-        cleanedParams[key] = String(val);
-      }
-    });
+                // Convert arrays -> comma-separated strings (backend DTO splits by comma)
+                Object.keys(cleanedParams).forEach((key) => {
+                    const val = cleanedParams[key];
+                    if (Array.isArray(val)) {
+                        cleanedParams[key] = val.join(',');
+                    }
+                    // ensure numbers/booleans are sent as primitives (URLSearchParams will stringify)
+                    if (typeof val === 'number' || typeof val === 'boolean') {
+                        cleanedParams[key] = String(val);
+                    }
+                });
 
-    // (optional) dev-only logging so you can inspect exactly what's sent
-    if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.debug('Products API params:', cleanedParams);
-    }
+                // (optional) dev-only logging so you can inspect exactly what's sent
+                if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
+                    // eslint-disable-next-line no-console
+                    console.debug('Products API params:', cleanedParams);
+                }
 
-    return {
-      url: '/products',
-      method: 'GET',
-      params: cleanedParams,
-    };
-  },
-  providesTags: (result) =>
-    result?.products
-      ? [
-          ...result.products.map(({ _id }) => ({ type: 'Products', id: _id })),
-          { type: 'Products', id: 'LIST' },
-        ]
-      : [{ type: 'Products', id: 'LIST' }],
-}),
-
-
+                return {
+                    url: '/products',
+                    method: 'GET',
+                    params: cleanedParams,
+                };
+            },
+            providesTags: (result) =>
+                result?.products
+                    ? [
+                        ...result.products.map(({ _id }) => ({ type: 'Products', id: _id })),
+                        { type: 'Products', id: 'LIST' },
+                    ]
+                    : [{ type: 'Products', id: 'LIST' }],
+        }),
 
         // GET /products/:id
         getProductById: builder.query({

@@ -167,7 +167,7 @@ export const ProductsList = ({ canDelete, canCreate }) => {
                                 <div className="flex gap-2 flex-wrap">
                                     <button
                                         onClick={() => router.push(`/products/${product._id}`)}
-                                        className="flex-1 px-3 py-2 bg-gray-100 rounded hover:bg-gray-200 text-sm"
+                                        className="flex-1 px-3 py-2 cursor-pointer bg-gray-100 rounded hover:bg-gray-200 text-sm"
                                     >
                                         <Eye className="w-4 h-4 inline-block mr-1" /> View
                                     </button>
@@ -175,7 +175,7 @@ export const ProductsList = ({ canDelete, canCreate }) => {
                                     {canDelete && (
                                         <button
                                             onClick={() => handleDelete(product._id)}
-                                            className="px-3 py-2 bg-white border rounded hover:bg-gray-50"
+                                            className="px-3 py-2 bg-white border cursor-pointer rounded hover:bg-gray-50"
                                         >
                                             <Trash2 className="w-4 h-4 text-gray-600" />
                                         </button>
@@ -184,7 +184,7 @@ export const ProductsList = ({ canDelete, canCreate }) => {
                                     {product.sale?.isOnSale ? (
                                         <button
                                             onClick={() => handleRemoveSale(product._id)}
-                                            className="px-3 py-2 bg-red-100 rounded text-red-600 hover:bg-red-200 text-sm"
+                                            className="px-3 py-2 cursor-pointer bg-red-100 rounded text-red-600 hover:bg-red-200 text-sm"
                                         >
                                             Remove Sale
                                         </button>
@@ -200,7 +200,7 @@ export const ProductsList = ({ canDelete, canCreate }) => {
                                                     endsAt: "",
                                                 })
                                             }
-                                            className="px-3 py-2 bg-blue-100 rounded text-blue-600 hover:bg-blue-200 text-sm"
+                                            className="px-3 py-2 cursor-pointer bg-blue-100 rounded text-blue-600 hover:bg-blue-200 text-sm"
                                         >
                                             <Tag className="w-4 h-4 inline-block mr-1" /> Set Sale
                                         </button>

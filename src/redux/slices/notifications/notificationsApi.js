@@ -17,7 +17,7 @@ export const notificationsApi = createApi({
     tagTypes: ["Notifications"],
     endpoints: (builder) => ({
         getUserNotifications: builder.query({
-            query: () => "/notifications",
+            query: (userId) => `/notifications/${userId}`,
             providesTags: (result) =>
                 result
                     ? [
@@ -26,6 +26,7 @@ export const notificationsApi = createApi({
                     ]
                     : [{ type: "Notifications", id: "LIST" }],
         }),
+
         markAsRead: builder.mutation({
             query: (id) => ({
                 url: `/notifications/${id}/read`,

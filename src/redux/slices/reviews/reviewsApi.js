@@ -21,7 +21,7 @@ export const reviewsApi = createApi({
         }),
         canReview: builder.query({
             query: (productId) => `/products/${productId}/reviews/can-review`,
-            providesTags: (result, error, productId) => [{ type: 'Reviews', id: productId }],
+            providesTags: (result, error, productId) => [{ type: 'Reviews', id: productId }, { type: 'Reviews', id: 'ALL' }],
         }),
         createReview: builder.mutation({
             query: ({ productId, body }) => ({

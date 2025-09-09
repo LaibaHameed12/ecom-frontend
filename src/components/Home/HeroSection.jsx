@@ -1,3 +1,6 @@
+import Link from "next/link";
+import Container from "../common/Container";
+
 export default function HeroSection() {
     return (
         // bg-[#F0F0F0] 
@@ -24,9 +27,9 @@ export default function HeroSection() {
                         </div>
 
                         <div className="flex justify-center lg:justify-start">
-                            <button className="bg-black cursor-pointer text-white px-20 py-4 rounded-full text-base font-medium hover:bg-gray-800 duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
+                            <Link href={'/products'} className="bg-black cursor-pointer text-white px-20 py-4 rounded-full text-base font-medium hover:bg-gray-800 duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
                                 Shop Now
-                            </button>
+                            </Link>
                         </div>
 
                         {/* Stats */}
@@ -67,22 +70,26 @@ export default function HeroSection() {
 
                             {/* Decorative Elements */}
                             <div className="absolute top-8 -right-4 w-20 h-20">
-                            <img src='/assets/large.png' alt="image"  />
+                                <img src='/assets/large.png' alt="image" />
                             </div>
                             <div className="absolute top-1/3 -left-6 w-32 h-32">
-                            <img src='/assets/small.png' />
+                                <img src='/assets/small.png' />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="bg-black flex items-center justify-between flex-wrap py-6 w-full px-4 sm:px-6 lg:px-16" >
+            <div className="w-full bg-black">
+                <Container>
+                <div className="bg-black flex items-center justify-between flex-wrap py-6 w-full px-4 sm:px-6 lg:px-16" >
                     <img src="/assets/img1.png" />
                     <img src="/assets/img2.png" />
                     <img src="/assets/img3.png" />
                     <img src="/assets/img4.png" />
                     <img src="/assets/img.png" />
                 </div>
+            </Container>
+            </div>
         </section>
     );
 }

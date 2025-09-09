@@ -1,4 +1,5 @@
 'use client'
+
 import React, { useState } from 'react';
 import { Tag, ArrowRight, MapPin, CreditCard, Wallet } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,12 +12,21 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
     const [paymentMethod, setPaymentMethod] = useState('card');
 
     const cartItems = useSelector((state) => state.cart.items);
+    const userPoints = useSelector((state) => state.auth.user?.loyaltyPoints || 0);
+
+
     const [createOrder, { isLoading }] = useCreateOrderMutation();
     const dispatch = useDispatch();
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     const discountAmount = Math.round((subtotal * discountPercentage) / 100);
     const total = subtotal - discountAmount + deliveryFee;
+
+    // Total points required for cart
+    const totalPointsRequired = Math.ceil(total / 250);
+
+    // Determine if user can pay with points
+    const canPayWithPoints = totalPointsRequired > 0 && userPoints >= totalPointsRequired;
 
     const handleCheckout = async () => {
         if (!address) {
@@ -37,6 +47,7 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
                     color: item.color,
                     quantity: item.quantity,
                     price: item.price,
+                    pointsUsed: paymentMethod === 'points' ? (item.pointsPrice || 0) * item.quantity : 0,
                 })),
                 shippingAddress: address,
                 paymentMethod,
@@ -94,24 +105,28 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
                         </div>
                     </label>
 
-                    {/* Points Payment */}
-                    <label className="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
-                        <input
-                            type="radio"
-                            name="payment"
-                            value="points"
-                            checked={paymentMethod === 'points'}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                            className="mr-3"
-                        />
-                        <div className="flex items-center">
-                            <Wallet className="text-gray-600 mr-3" size={20} />
-                            <div>
-                                <span className="text-gray-900 font-medium">Loyalty Points</span>
-                                <p className="text-gray-500 text-sm">Use your reward points</p>
+                    {/* Points Payment (conditionally rendered) */}
+                    {canPayWithPoints && (
+                        <label className="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="points"
+                                checked={paymentMethod === 'points'}
+                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                className="mr-3"
+                            />
+                            <div className="flex items-center">
+                                <Wallet className="text-gray-600 mr-3" size={20} />
+                                <div>
+                                    <span className="text-gray-900 font-medium">Loyalty Points</span>
+                                    <p className="text-gray-500 text-sm">
+                                        Use your {totalPointsRequired} reward points
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </label>
+                        </label>
+                    )}
                 </div>
             </div>
 

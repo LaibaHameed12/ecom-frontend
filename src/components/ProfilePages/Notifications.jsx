@@ -8,8 +8,8 @@ import {
 import { Bell, Package, Gift, AlertCircle, X, Check } from "lucide-react";
 
 
-export const Notifications = () => {
-    const { data: notifications = [], isLoading } = useGetUserNotificationsQuery();
+export const Notifications = ({userId}) => {
+    const { data: notifications = [], isLoading } = useGetUserNotificationsQuery(userId);
     const [markAsRead] = useMarkAsReadMutation();
     const [deleteNotification] = useDeleteNotificationMutation();
 
@@ -88,13 +88,13 @@ export const Notifications = () => {
                                                     <Check className="w-4 h-4" />
                                                 </button>
                                             )}
-                                            <button
+                                            {/* <button
                                                 onClick={() => deleteNotification(notification._id)}
                                                 className="p-1 text-gray-400 hover:text-red-600"
                                                 title="Delete"
                                             >
                                                 <X className="w-4 h-4" />
-                                            </button>
+                                            </button> */}
                                         </div>
                                     </div>
                                 </div>

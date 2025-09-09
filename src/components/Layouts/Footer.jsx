@@ -1,34 +1,37 @@
 import { Mail, Twitter, Facebook, Instagram, Github } from 'lucide-react';
+import Container from '../common/Container';
 
 export default function Footer() {
     return (
         <footer className="bg-gray-100">
             {/* Newsletter Section */}
-            <div className="bg-black rounded-3xl mx-4 sm:mx-8 lg:mx-16 -mb-16 relative z-10">
-                <div className="px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
-                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
-                        <div className="text-center lg:text-left">
-                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight max-w-2xl">
-                                STAY UPTO DATE ABOUT OUR LATEST OFFERS
-                            </h2>
-                        </div>
-
-                        <div className="flex flex-col gap-4 w-full lg:w-auto lg:min-w-[350px]">
-                            <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                                <input
-                                    type="email"
-                                    placeholder="Enter your email address"
-                                    className="w-full pl-12 pr-6 py-4 rounded-full text-gray-900 placeholder-gray-500 border-0 focus:ring-2 bg-white focus:ring-white focus:outline-none"
-                                />
+            <Container>
+                <div className="bg-black rounded-3xl mx-4 sm:mx-8 lg:mx-16 -mb-16 relative z-10">
+                    <div className="px-6 sm:px-8 lg:px-12 py-8 sm:py-12">
+                        <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
+                            <div className="text-center lg:text-left">
+                                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight max-w-2xl">
+                                    STAY UPTO DATE ABOUT OUR LATEST OFFERS
+                                </h2>
                             </div>
-                            <button className="w-full bg-white text-black py-4 rounded-full font-medium hover:bg-gray-100 transition-colors duration-200">
-                                Subscribe to Newsletter
-                            </button>
+
+                            <div className="flex flex-col gap-4 w-full lg:w-auto lg:min-w-[350px]">
+                                <div className="relative">
+                                    <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <input
+                                        type="email"
+                                        placeholder="Enter your email address"
+                                        className="w-full pl-12 pr-6 py-4 rounded-full text-gray-900 placeholder-gray-500 border-0 focus:ring-2 bg-white focus:ring-white focus:outline-none"
+                                    />
+                                </div>
+                                <button className="w-full bg-white text-black py-4 rounded-full font-medium hover:bg-gray-100 transition-colors duration-200">
+                                    Subscribe to Newsletter
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </Container>
 
             {/* Main Footer Content */}
             <div className="pt-24 pb-8">

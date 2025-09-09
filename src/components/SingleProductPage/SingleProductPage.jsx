@@ -11,7 +11,7 @@ import { ProductReviews } from './ProductReviews';
 import FAQ from './FAQ';
 import ProductDetails from './ProductDetails';
 import ReviewForm from './ReviewForm';
-import HomeProducts from '../Home/HomeProducts';
+import RelatedProducts from './RelatedProducts';
 
 const SingleProductPage = () => {
     const { id } = useParams();
@@ -102,7 +102,7 @@ const SingleProductPage = () => {
                 {loadingRelated ? (
                     <p className="text-center text-gray-500">Loading related products...</p>
                 ) : (
-                    <HomeProducts products={related} heading={'Related Products'} />
+                    <RelatedProducts products={related} heading={'Related Products'} />
                 )}
             </div>
 

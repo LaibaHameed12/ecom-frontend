@@ -117,10 +117,10 @@ export const OrdersList = () => {
                                     <select
                                         value={order.status}
                                         onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                                        className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(order.status)} focus:outline-none focus:ring-2 focus:ring-gray-200`}
+                                        className={`px-3 py-1 cursor-pointer rounded-full text-xs font-medium border ${getStatusColor(order.status)} focus:outline-none focus:ring-2 focus:ring-gray-200`}
                                     >
                                         {statusOptions.map((status) => (
-                                            <option key={status} value={status}>
+                                            <option key={status} value={status} className='cursor-pointer'>
                                                 {status.toUpperCase()}
                                             </option>
                                         ))}

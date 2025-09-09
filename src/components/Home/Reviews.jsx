@@ -11,6 +11,7 @@ import { ReviewCard } from '../common/ReviewCard';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import Container from '../common/Container';
 
 const ReviewsSlider = () => {
     const { data: reviews = [], isLoading } = useGetAllReviewsQuery(15);
@@ -22,7 +23,8 @@ const ReviewsSlider = () => {
     if (!validReviews.length) return <div>No reviews yet.</div>;
 
     return (
-        <div className="max-w-7xl mx-auto px-4 py-12">
+        <Container>
+            <div className="w-full max-w-7xl mx-auto px-4 py-12">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 uppercase tracking-tight">
@@ -74,7 +76,7 @@ const ReviewsSlider = () => {
                 {validReviews.map((review) => (
                     <SwiperSlide key={review._id} className="!h-auto">
                         <div className="h-60 w-full">
-                            <Link href={`/products/${review.product._id}`} className="block w-full h-full">
+                            <Link href={`/products/${review.product._id}`} className="block w-full h-full overflow-hidden">
                                 <ReviewCard
                                     review={review}
                                     className="h-full w-full flex flex-col"
@@ -119,6 +121,7 @@ const ReviewsSlider = () => {
                 }
             `}</style>
         </div>
+        </Container>
     );
 };
 
