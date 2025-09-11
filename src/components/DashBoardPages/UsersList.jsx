@@ -7,6 +7,7 @@ import {
     Lock,
     Unlock,
     Trash2,
+    Table,
 } from 'lucide-react';
 import {
     useGetUsersQuery,
@@ -14,6 +15,7 @@ import {
     useUpdateUserStatusMutation,
     useDeleteUserMutation,
 } from '@/redux/slices/users/usersApi';
+import { TableSkeleton } from '../common/TableSkeleton';
 
 export const UsersList = ({ canDelete, canUpdateRoles, canBlock }) => {
     const { data: users = [], isLoading, isError } = useGetUsersQuery();
@@ -50,7 +52,19 @@ export const UsersList = ({ canDelete, canUpdateRoles, canBlock }) => {
         }
     };
 
-    if (isLoading) return <p>Loading users...</p>;
+    if (isLoading) return (
+        <TableSkeleton
+            title="Users Management"
+            icon={Users}
+            columns={[
+                { type: 'user' },
+                { type: 'status' },
+                { type: 'status' },
+                { type: 'actions', actionCount: 3 }
+            ]}
+            rows={6}
+        />
+    );
     if (isError) return <p className="text-red-500">Failed to load users</p>;
 
     // ✅ Filter out superadmins completely

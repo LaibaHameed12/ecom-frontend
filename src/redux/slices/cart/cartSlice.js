@@ -41,8 +41,9 @@ const cartSlice = createSlice({
                     quantity: Number(payload.quantity || 1),
                     price: Number(payload.price || 0),
                     pointsUsed: payload.pointsUsed,
-                    title: payload.title,   // snapshot
-                    image: payload.image,   // snapshot
+                    title: payload.title,   
+                    image: payload.image,   
+                    purchaseType: payload.purchaseType,
                 });
             }
 

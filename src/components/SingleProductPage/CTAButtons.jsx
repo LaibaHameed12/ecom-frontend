@@ -54,6 +54,7 @@ export const CTAButtons = ({ product, selectedVariants }) => {
                 price: finalPrice,
                 title: product.title,
                 image: product.images[0],
+                purchaseType: product.purchaseType,
             })
         );
 

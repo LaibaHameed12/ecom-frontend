@@ -26,7 +26,6 @@ const UserProfilePage = () => {
     };
 
 
-
     const tabs = [
         { id: 'orders', label: 'Order History', icon: <Box/> },
         { id: 'notifications', label: 'Notifications', icon: <Bell/> },

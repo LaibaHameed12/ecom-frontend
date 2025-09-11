@@ -15,7 +15,15 @@ const NewArrivals = () => {
   const products = data?.products || []
 
   if (isLoading) {
-    return <div className="py-10 text-center">Loading new arrivals...</div>
+    return (
+      <div className="pt-10 border-b border-black/10">
+        <HomeProducts
+          heading="NEW ARRIVALS"
+          products={Array(4).fill(null)} 
+          isLoading={true}
+        />
+      </div>
+    )
   }
 
   if (isError) {

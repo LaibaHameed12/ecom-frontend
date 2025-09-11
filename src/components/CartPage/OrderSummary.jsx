@@ -1,32 +1,42 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tag, ArrowRight, MapPin, CreditCard, Wallet } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useCreateOrderMutation } from '@/redux/slices/orders/ordersApi';
 import { clearCart } from '@/redux/slices/cart/cartSlice';
+import { useGetProfileQuery } from '@/redux/slices/users/usersApi';
+import { updateUser } from '@/redux/slices/auth/authSlice';
 
 const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
     const [promoCode, setPromoCode] = useState('');
     const [address, setAddress] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('card');
+    const [createOrder, { isLoading }] = useCreateOrderMutation();
 
+    const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.items);
     const userPoints = useSelector((state) => state.auth.user?.loyaltyPoints || 0);
 
-
-    const [createOrder, { isLoading }] = useCreateOrderMutation();
-    const dispatch = useDispatch();
+    const { data: profile } = useGetProfileQuery(undefined, { refetchOnMountOrArgChange: true })
+    useEffect(() => {
+        if (profile) dispatch(updateUser(profile));
+    }, [profile, dispatch]);
 
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     const discountAmount = Math.round((subtotal * discountPercentage) / 100);
     const total = subtotal - discountAmount + deliveryFee;
-
-    // Total points required for cart
     const totalPointsRequired = Math.ceil(total / 250);
 
-    // Determine if user can pay with points
-    const canPayWithPoints = totalPointsRequired > 0 && userPoints >= totalPointsRequired;
+    // If ANY cart item does not support points, block points
+    const cartHasCardOnly = cartItems.some(
+        (item) => !item.purchaseType?.includes('points')
+    );
+
+    const canPayWithPoints =
+        totalPointsRequired > 0 &&
+        userPoints >= totalPointsRequired &&
+        !cartHasCardOnly;
 
     const handleCheckout = async () => {
         if (!address) {
@@ -59,6 +69,7 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
 
             dispatch(clearCart());
             alert('Order placed successfully!');
+            refetch();
         } catch (err) {
             console.error('Checkout failed:', err);
             alert('Failed to place order. Please try again.');

@@ -16,7 +16,10 @@ export const authApi = createApi({
         refresh: builder.mutation({ query: () => ({ url: '/refresh', method: 'POST' }) }),
         verifyOtp: builder.mutation({ query: (data) => ({ url: '/verify-otp', method: 'POST', body: data }) }),
         resendOtp: builder.mutation({ query: (data) => ({ url: '/resend-otp', method: 'POST', body: data }) }),
+        getProfile: builder.query({
+            query: () => ({ url: '/users/me' }),
+        }),
     }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useRefreshMutation, useVerifyOtpMutation, useResendOtpMutation } = authApi;
+export const { useRegisterMutation, useLoginMutation, useRefreshMutation, useVerifyOtpMutation, useResendOtpMutation, useGetProfileQuery } = authApi;

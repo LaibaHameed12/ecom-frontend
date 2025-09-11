@@ -13,6 +13,7 @@ import { setSelectedProductId } from "@/redux/slices/products/productsSlice";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { SaleModal } from "./SaleModal";
+import { TableSkeleton } from "../common/TableSkeleton";
 
 export const ProductsList = ({ canDelete, canCreate }) => {
     const dispatch = useDispatch();
@@ -83,7 +84,14 @@ export const ProductsList = ({ canDelete, canCreate }) => {
         }
     };
 
-    if (isLoading) return <div className="p-6">Loading products...</div>;
+    if (isLoading) return (
+        <TableSkeleton
+            title="Products Management"
+            icon={Package}
+            type="grid"
+            rows={8}
+        />
+    );
     if (isError) return <div className="p-6 text-red-600">Failed to load products.</div>;
 
     const products = data?.products || [];

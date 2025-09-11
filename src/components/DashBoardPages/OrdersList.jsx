@@ -12,6 +12,7 @@ import {
     useUpdateOrderMutation,
 } from '@/redux/slices/orders/ordersApi';
 import { OrderDetailsModal } from './OrderDetailsModal';
+import { TableSkeleton } from '../common/TableSkeleton';
 
 export const OrdersList = () => {
     const { data: orders = [], isLoading, isError } = useGetOrdersQuery();
@@ -39,13 +40,33 @@ export const OrdersList = () => {
         try {
             await updateOrder({ id, status: newStatus }).unwrap();
         } catch (err) {
-            console.error('Failed to update order status:', err);
-            alert('Failed to update order status. Please try again.');
+            // Handle different error shapes
+            const errorMessage = Array.isArray(err?.data?.message)
+                ? err.data.message.join(', ') // ValidationPipe sends array
+                : err?.data?.message || err?.error || 'Something went wrong';
+
+            alert(errorMessage);
         }
     };
 
+
     if (isLoading) {
-        return <div className="p-6 text-gray-600">Loading orders...</div>;
+        return (
+            <TableSkeleton
+                title="Orders Management"
+                icon={ShoppingCart}
+                columns={[
+                    { width: 'w-24' }, // Order ID
+                    { type: 'products' }, // Products
+                    { type: 'user' }, // Customer
+                    { width: 'w-20' }, // Date
+                    { type: 'price' }, // Amount
+                    { type: 'status' }, // Status
+                    { type: 'actions', actionCount: 1 } // Actions
+                ]}
+                rows={8}
+            />
+        );
     }
 
     if (isError) {
@@ -103,7 +124,7 @@ export const OrdersList = () => {
                                 <td className="py-4 px-4">
                                     <div className="flex items-center gap-2 font-medium text-gray-900">
                                         {order.paymentMethod === "points" ? (
-                                            <span className='text-xs' >{order.totalAmount / 250 } points</span>
+                                            <span className='text-xs' >{order.totalAmount / 250} points</span>
                                         ) : (
                                             <>
                                                 <DollarSign className="w-4 h-4" />
