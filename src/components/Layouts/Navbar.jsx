@@ -7,12 +7,14 @@ import { getUser, isAdmin, isSuperadmin } from '@/redux/slices/auth/authSlice';
 import { selectCartTotalQuantity } from '@/redux/slices/cart/cartSlice';
 import Container from '../common/Container';
 import { Search, ShoppingCart, User, ChevronDown, Menu, X, LayoutDashboard } from 'lucide-react';
+import { useSocket } from '@/hooks/useSalesSocket';
 
 export default function Navbar() {
     const user = useSelector(getUser);
     const admin = useSelector(isAdmin);
     const superadmin = useSelector(isSuperadmin);
     const cartQuantity = useSelector(selectCartTotalQuantity);
+    const socket = useSocket()
 
     const [searchTerm, setSearchTerm] = useState("");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -23,6 +25,14 @@ export default function Navbar() {
     useEffect(() => {
         if (user) setIsTopBarVisible(false);
     }, [user]);
+
+    useEffect(() => {
+        if(socket){
+            socket.on('saleStarted', () => {
+                console.log("Sale is started!")
+            })
+        }
+    }, [socket])
 
     const handleCloseTopBar = () => setIsTopBarVisible(false);
 

@@ -1,7 +1,7 @@
 import ReduxProvider from "@/redux/provider";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
-import SalesSocketProvider from "@/hooks/SalesSocketProvider";
+import { SocketProvider } from "@/hooks/useSalesSocket";
 
 export const metadata = {
   title: "SHOP.CO",
@@ -15,9 +15,9 @@ export default function RootLayout({ children }) {
         className={` antialiased`}
       >
         <ReduxProvider>
-          <SalesSocketProvider>
+          <SocketProvider>
           {children}
-          </SalesSocketProvider>
+          </SocketProvider>
           <ToastContainer position="top-right" autoClose={3000} />
         </ReduxProvider>
       </body>

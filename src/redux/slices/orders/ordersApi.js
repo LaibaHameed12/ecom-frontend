@@ -70,6 +70,15 @@ export const ordersApi = createApi({
                 { type: 'Orders', id: 'LIST' },
             ],
         }),
+
+        createCheckoutSession: builder.mutation({
+            query: (payload) => ({
+                url: '/stripe/create-checkout-session',
+                method: 'POST',
+                body: payload,
+            }),
+        }),
+
     }),
 });
 
@@ -79,4 +88,5 @@ export const {
     useGetOrderByIdQuery,
     useUpdateOrderMutation,
     useDeleteOrderMutation,
+    useCreateCheckoutSessionMutation,
 } = ordersApi;

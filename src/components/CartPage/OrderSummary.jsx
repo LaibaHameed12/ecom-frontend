@@ -3,36 +3,48 @@
 import React, { useEffect, useState } from 'react';
 import { Tag, ArrowRight, MapPin, CreditCard, Wallet } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useCreateOrderMutation } from '@/redux/slices/orders/ordersApi';
+import {
+    useCreateCheckoutSessionMutation,
+    useCreateOrderMutation,
+} from '@/redux/slices/orders/ordersApi';
 import { clearCart } from '@/redux/slices/cart/cartSlice';
 import { useGetProfileQuery } from '@/redux/slices/users/usersApi';
 import { updateUser } from '@/redux/slices/auth/authSlice';
 
-const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
+const CheckoutInner = ({ discountPercentage = 0, deliveryFee = 0 }) => {
     const [promoCode, setPromoCode] = useState('');
     const [address, setAddress] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('card');
+    const [paymentMethod, setPaymentMethod] = useState('money');
     const [createOrder, { isLoading }] = useCreateOrderMutation();
+    const [createCheckoutSession, { isLoading: isCreatingSession }] =
+        useCreateCheckoutSessionMutation();
 
     const dispatch = useDispatch();
-    const cartItems = useSelector((state) => state.cart.items);
-    const userPoints = useSelector((state) => state.auth.user?.loyaltyPoints || 0);
 
-    const { data: profile } = useGetProfileQuery(undefined, { refetchOnMountOrArgChange: true })
+    const cartItems = useSelector((state) => state.cart.items);
+    const userPoints = useSelector(
+        (state) => state.auth.user?.loyaltyPoints || 0
+    );
+
+    const { data: profile } = useGetProfileQuery(undefined, {
+        refetchOnMountOrArgChange: true,
+    });
+
     useEffect(() => {
         if (profile) dispatch(updateUser(profile));
     }, [profile, dispatch]);
 
-    const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    const subtotal = cartItems.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+    );
     const discountAmount = Math.round((subtotal * discountPercentage) / 100);
     const total = subtotal - discountAmount + deliveryFee;
-    const totalPointsRequired = Math.ceil(total / 250);
+    const totalPointsRequired = Math.ceil(total / 250); // ⚠️ sync formula with backend
 
-    // If ANY cart item does not support points, block points
     const cartHasCardOnly = cartItems.some(
         (item) => !item.purchaseType?.includes('points')
     );
-
     const canPayWithPoints =
         totalPointsRequired > 0 &&
         userPoints >= totalPointsRequired &&
@@ -43,33 +55,58 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
             alert('Please enter delivery address.');
             return;
         }
-
         if (cartItems.length === 0) {
             alert('Your cart is empty.');
             return;
         }
 
         try {
-            const orderPayload = {
-                items: cartItems.map((item) => ({
-                    product: item.product,
-                    size: item.size,
-                    color: item.color,
-                    quantity: item.quantity,
-                    price: item.price,
-                    pointsUsed: paymentMethod === 'points' ? (item.pointsPrice || 0) * item.quantity : 0,
-                })),
-                shippingAddress: address,
-                paymentMethod,
-                paymentIntentId: null, // later when integrating Stripe
-            };
+            if (paymentMethod === 'money') {
+                const payload = {
+                    items: cartItems.map((item) => ({
+                        product:
+                            typeof item.product === 'string'
+                                ? item.product
+                                : item.product?._id || item.product,
+                        title:
+                            item.title || item.product?.title || '',
+                        size: item.size,
+                        color: item.color,
+                        quantity: item.quantity,
+                        price: item.price,
+                    })),
+                    shippingAddress: address,
+                };
 
-            const response = await createOrder(orderPayload).unwrap();
-            console.log('Order placed successfully:', response);
+                const res = await createCheckoutSession(payload).unwrap();
 
-            dispatch(clearCart());
-            alert('Order placed successfully!');
-            refetch();
+                if (res && res.url) {
+                    window.location.href = res.url;
+                } else {
+                    alert('Failed to create checkout session. Please try again.');
+                }
+            } else if (paymentMethod === 'points') {
+                const orderPayload = {
+                    items: cartItems.map((item) => ({
+                        product:
+                            typeof item.product === 'string'
+                                ? item.product
+                                : item.product?._id || item.product,
+                        size: item.size,
+                        color: item.color,
+                        quantity: item.quantity,
+                        price: item.price,
+                        pointsUsed: (item.pointsPrice || 0) * item.quantity,
+                    })),
+                    shippingAddress: address,
+                    paymentMethod: 'points',
+                    paymentIntentId: null,
+                };
+
+                await createOrder(orderPayload).unwrap();
+                dispatch(clearCart());
+                alert('Order placed successfully using points!');
+            }
         } catch (err) {
             console.error('Checkout failed:', err);
             alert('Failed to place order. Please try again.');
@@ -80,7 +117,9 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
         <>
             <div className="bg-white rounded-2xl p-6 shadow-sm max-w-md mx-auto mb-6">
                 {/* Address Section */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Delivery Address</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Delivery Address
+                </h3>
                 <div className="relative mb-6">
                     <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
                         <MapPin size={20} />
@@ -95,28 +134,39 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
                 </div>
 
                 {/* Payment Method Section */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Method</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                    Payment Method
+                </h3>
                 <div className="space-y-3">
-                    {/* Card Payment */}
-                    <label className="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
-                        <input
-                            type="radio"
-                            name="payment"
-                            value="card"
-                            checked={paymentMethod === 'card'}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                            className="mr-3"
-                        />
+                    {/* Card Payment (Checkout Session) */}
+                    <label className="flex flex-col gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                         <div className="flex items-center">
-                            <CreditCard className="text-gray-600 mr-3" size={20} />
-                            <div>
-                                <span className="text-gray-900 font-medium">Credit/Debit Card</span>
-                                <p className="text-gray-500 text-sm">Pay with your card</p>
+                            <input
+                                type="radio"
+                                name="payment"
+                                value="money"
+                                checked={paymentMethod === 'money'}
+                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                className="mr-3"
+                            />
+                            <div className="flex items-center">
+                                <CreditCard
+                                    className="text-gray-600 mr-3"
+                                    size={20}
+                                />
+                                <div>
+                                    <span className="text-gray-900 font-medium">
+                                        Credit/Debit Card
+                                    </span>
+                                    <p className="text-gray-500 text-sm">
+                                        Redirects to Stripe Checkout
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </label>
 
-                    {/* Points Payment (conditionally rendered) */}
+                    {/* Points Payment */}
                     {canPayWithPoints && (
                         <label className="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                             <input
@@ -128,11 +178,17 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
                                 className="mr-3"
                             />
                             <div className="flex items-center">
-                                <Wallet className="text-gray-600 mr-3" size={20} />
+                                <Wallet
+                                    className="text-gray-600 mr-3"
+                                    size={20}
+                                />
                                 <div>
-                                    <span className="text-gray-900 font-medium">Loyalty Points</span>
+                                    <span className="text-gray-900 font-medium">
+                                        Loyalty Points
+                                    </span>
                                     <p className="text-gray-500 text-sm">
-                                        Use your {totalPointsRequired} reward points
+                                        Use your {totalPointsRequired} reward
+                                        points
                                     </p>
                                 </div>
                             </div>
@@ -143,30 +199,42 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
 
             {/* Order Summary */}
             <div className="bg-white rounded-2xl p-6 shadow-sm max-w-md mx-auto">
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Order Summary</h2>
+                <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                    Order Summary
+                </h2>
 
                 <div className="space-y-4 mb-6">
                     <div className="flex justify-between items-center">
                         <span className="text-gray-500 text-lg">Subtotal</span>
-                        <span className="text-lg font-semibold text-gray-900">${subtotal}</span>
+                        <span className="text-lg font-semibold text-gray-900">
+                            ${subtotal}
+                        </span>
                     </div>
-
                     <div className="flex justify-between items-center">
-                        <span className="text-gray-500 text-lg">Discount (-{discountPercentage}%)</span>
-                        <span className="text-lg font-semibold text-red-500">-${discountAmount}</span>
+                        <span className="text-gray-500 text-lg">
+                            Discount (-{discountPercentage}%)
+                        </span>
+                        <span className="text-lg font-semibold text-red-500">
+                            -${discountAmount}
+                        </span>
                     </div>
-
                     <div className="flex justify-between items-center">
                         <span className="text-gray-500 text-lg">Delivery Fee</span>
-                        <span className="text-lg font-semibold text-gray-900">${deliveryFee}</span>
+                        <span className="text-lg font-semibold text-gray-900">
+                            ${deliveryFee}
+                        </span>
                     </div>
                 </div>
 
                 <hr className="border-gray-200 mb-6" />
 
                 <div className="flex justify-between items-center mb-8">
-                    <span className="text-xl font-semibold text-gray-900">Total</span>
-                    <span className="text-2xl font-bold text-gray-900">${total}</span>
+                    <span className="text-xl font-semibold text-gray-900">
+                        Total
+                    </span>
+                    <span className="text-2xl font-bold text-gray-900">
+                        ${total}
+                    </span>
                 </div>
 
                 <div className="flex gap-3 mb-6">
@@ -182,24 +250,26 @@ const OrderSummary = ({ discountPercentage = 0, deliveryFee = 0 }) => {
                             className="w-full pl-12 pr-4 py-4 bg-gray-100 rounded-full text-gray-600 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200"
                         />
                     </div>
-                    <button
-                        className="px-8 py-4 cursor-pointer bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-colors"
-                    >
+                    <button className="px-8 py-4 cursor-pointer bg-black text-white rounded-full font-medium hover:bg-gray-800 transition-colors">
                         Apply
                     </button>
                 </div>
 
                 <button
                     onClick={handleCheckout}
-                    disabled={isLoading}
+                    disabled={isLoading || isCreatingSession}
                     className="w-full py-4 cursor-pointer bg-black text-white rounded-full font-medium text-lg flex items-center justify-center gap-2 hover:bg-gray-800 transition-colors"
                 >
-                    {isLoading ? 'Processing...' : 'Go to Checkout'}
+                    {isLoading || isCreatingSession
+                        ? 'Processing...'
+                        : 'Go to Checkout'}
                     <ArrowRight size={20} />
                 </button>
             </div>
         </>
     );
 };
+
+const OrderSummary = (props) => <CheckoutInner {...props} />;
 
 export default OrderSummary;

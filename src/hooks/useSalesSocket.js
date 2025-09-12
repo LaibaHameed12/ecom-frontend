@@ -1,31 +1,50 @@
-// src/hooks/useSalesSocket.js
+// src/context/SocketContext.jsx
 "use client";
-import { useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { toast } from "react-toastify";
 
-export default function useSalesSocket() {
+// create the context
+const SocketContext = createContext(null);
+
+// provider component
+export const SocketProvider = ({ children }) => {
+    const [socket, setSocket] = useState(null);
+
     useEffect(() => {
-        const socket = io(`${process.env.NEXT_PUBLIC_API_URL}/sales`, {
-            transports: ["websocket"],
+        // connect to your backend socket server
+        const newSocket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000", {
+            transports: ["websocket"], // force websockets
+            withCredentials: true,
         });
 
-        socket.on("connect", () => {
-            console.log("✅ Connected to Sales socket");
+        setSocket(newSocket);
+
+        // example event listeners
+        newSocket.on("connect", () => {
+            console.log("✅ Socket connected:", newSocket.id);
         });
 
-        socket.on("saleStarted", (data) => {
-            toast.info("🔥 A new sale has started! Check products now!");
-            console.log("Sale started event:", data);
+        newSocket.on("disconnect", () => {
+            console.log("❌ Socket disconnected");
         });
 
-        socket.on("saleEnded", (data) => {
-            toast.warn("⚠️ The sale has ended.");
-            console.log("Sale ended event:", data);
+        // listen to custom events from backend
+        newSocket.on("notification", (data) => {
+            console.log("📩 Notification received:", data);
         });
 
+        // cleanup on unmount
         return () => {
-            socket.disconnect();
+            newSocket.disconnect();
         };
     }, []);
-}
+
+    return (
+        <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+    );
+};
+
+// custom hook to use socket easily
+export const useSocket = () => {
+    return useContext(SocketContext);
+};
