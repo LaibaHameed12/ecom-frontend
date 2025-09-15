@@ -55,7 +55,7 @@ const Header = () => {
 
                     <div className="flex items-center gap-4">
                         <div className="text-sm text-gray-500">
-                            Welcome, {user?.name || user?.username || "Admin"}
+                            Welcome, {user?.fullName || user?.username || "Admin"}
                         </div>
 
                         {/* User Dropdown */}
